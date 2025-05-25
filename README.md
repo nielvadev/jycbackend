@@ -63,12 +63,12 @@ Crea un archivo llamado appsettings.json en la raíz del proyecto (este archivo 
 ```bash
 dotnet run
 ```
+
 Por defecto estará disponible en:
 
 https://localhost:5001
 
 http://localhost:5000
-
 
 ### 5. Ver la documentación Swagger
 
@@ -76,7 +76,7 @@ http://localhost:5000
 https://localhost:5001/swagger
 ```
 
-___
+---
 
 ## Estructura del proyecto
 
@@ -108,9 +108,16 @@ ___
 │
 ```
 
-___
+---
 
-# Scripts para la base de datos
+## 📜 Base de datos
+
+El proyecto utiliza SQL Server como base de datos.
+
+### 1. Crea la base de datos
+
+```sql
+
 
 CREATE DATABASE JyCDB;
 GO
@@ -120,59 +127,60 @@ GO
 
 -- Tabla Clients
 CREATE TABLE Clients (
-    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWSEQUENTIALID(),
-    ClientDoc NVARCHAR(50) NOT NULL,
-    FirstName NVARCHAR(100) NOT NULL,
-    LastName NVARCHAR(100) NOT NULL,
-    Email NVARCHAR(150) UNIQUE NOT NULL,
-    Phone NVARCHAR(20),
-    Address NVARCHAR(200),
-    CreatedAt DATETIME NOT NULL DEFAULT GETDATE()
+Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWSEQUENTIALID(),
+ClientDoc NVARCHAR(50) NOT NULL,
+FirstName NVARCHAR(100) NOT NULL,
+LastName NVARCHAR(100) NOT NULL,
+Email NVARCHAR(150) UNIQUE NOT NULL,
+Phone NVARCHAR(20),
+Address NVARCHAR(200),
+CreatedAt DATETIME NOT NULL DEFAULT GETDATE()
 );
 GO
 
 -- Tabla Products
 CREATE TABLE Products (
-    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWSEQUENTIALID(),
-    Name NVARCHAR(100) NOT NULL,
-    Description NVARCHAR(500),
-    Price DECIMAL(18,2) NOT NULL,
-    Stock INT NOT NULL DEFAULT 0,
-    CreatedAt DATETIME NOT NULL DEFAULT GETDATE()
+Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWSEQUENTIALID(),
+Name NVARCHAR(100) NOT NULL,
+Description NVARCHAR(500),
+Price DECIMAL(18,2) NOT NULL,
+Stock INT NOT NULL DEFAULT 0,
+CreatedAt DATETIME NOT NULL DEFAULT GETDATE()
 );
 GO
 
 -- Tabla Orders
 CREATE TABLE Orders (
-    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWSEQUENTIALID(),
-    ClientId UNIQUEIDENTIFIER NOT NULL,
-    OrderDate DATETIME NOT NULL DEFAULT GETDATE(),
-    EstimatedDeliveryDate DATETIME NULL,
-    Status NVARCHAR(50) NOT NULL DEFAULT 'Pending',
-    FOREIGN KEY (ClientId) REFERENCES Clients(Id)
+Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWSEQUENTIALID(),
+ClientId UNIQUEIDENTIFIER NOT NULL,
+OrderDate DATETIME NOT NULL DEFAULT GETDATE(),
+EstimatedDeliveryDate DATETIME NULL,
+Status NVARCHAR(50) NOT NULL DEFAULT 'Pending',
+FOREIGN KEY (ClientId) REFERENCES Clients(Id)
 );
 GO
 
 -- Tabla OrderDetails
 CREATE TABLE OrderDetails (
-    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWSEQUENTIALID(),
-    OrderId UNIQUEIDENTIFIER NOT NULL,
-    ProductId UNIQUEIDENTIFIER NOT NULL,
-    Quantity INT NOT NULL,
-    UnitPrice DECIMAL(18,2) NOT NULL,
-    FOREIGN KEY (OrderId) REFERENCES Orders(Id),
-    FOREIGN KEY (ProductId) REFERENCES Products(Id)
+Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWSEQUENTIALID(),
+OrderId UNIQUEIDENTIFIER NOT NULL,
+ProductId UNIQUEIDENTIFIER NOT NULL,
+Quantity INT NOT NULL,
+UnitPrice DECIMAL(18,2) NOT NULL,
+FOREIGN KEY (OrderId) REFERENCES Orders(Id),
+FOREIGN KEY (ProductId) REFERENCES Products(Id)
 );
 GO
 
 -- Tabla Deliveries
 CREATE TABLE Deliveries (
-    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWSEQUENTIALID(),
-    OrderId UNIQUEIDENTIFIER NOT NULL UNIQUE,
-    DeliveryDate DATETIME NULL,
-    Delivered BIT NOT NULL DEFAULT 0,
-    Observations NVARCHAR(500),
-    FOREIGN KEY (OrderId) REFERENCES Orders(Id)
+Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWSEQUENTIALID(),
+OrderId UNIQUEIDENTIFIER NOT NULL UNIQUE,
+DeliveryDate DATETIME NULL,
+Delivered BIT NOT NULL DEFAULT 0,
+Observations NVARCHAR(500),
+FOREIGN KEY (OrderId) REFERENCES Orders(Id)
 );
 GO
+```
 
